@@ -62,7 +62,7 @@ def a_star(maze, start, end):
                     maze[0]):
                 continue
 
-            if maze[node_position[0]][node_position[1]] == '1':
+            if maze[node_position[0]][node_position[1]] == '1' :
                 continue
 
             if node_position in closed_list:

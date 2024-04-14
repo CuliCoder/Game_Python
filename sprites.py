@@ -257,10 +257,18 @@ class Bullet(pygame.sprite.Sprite):
             Explosion(self.game, self.position)
             self.kill()
 
-    def update(self):
-        self.collide_with_walls()
+    def despawn(self):  # hàm này để xóa đạn khi nó đi ra khỏi màn hình
+        if self.rect.right < 0 or self.rect.left > WIDTH or self.rect.top > HEIGHT or self.rect.bottom < 0:
+            self.kill()
+
+    def move(self):  # hàm di chuyển của đạn
         self.position += self.vel * self.game.changing_time
         self.rect.center = self.position
+
+    def update(self):
+        self.collide_with_walls()
+        self.move()
+        self.despawn()
 
 
 # -----------------------------------------------------------------------------------

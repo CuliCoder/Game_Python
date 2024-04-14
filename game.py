@@ -26,8 +26,9 @@ class game:
         with open(path.join(maze_forder, 'MAZE21.txt'),
                   'rt') as f:  # cái này sửa lại tất cả file ma trận thành 24 dòng 32 cột rồi làm thành random , giờ demo thì lấy lại MAZE1.txt tại sửa file đó rồi
             for line in f:
-                self.maze.append(line)
+                self.maze.append(line.strip())
         # self.maze.append()
+        print(len(self.maze))
         self.pausing = False
         self.playing = True
         self.respawn = auto_respawn_tank(self, 3)
