@@ -20,7 +20,6 @@ class game:
         self.AddedItems()
 
     def data(self):
-        self.respawn_time = 3  # delay hồi sinh là 3 giây
         self.maze = []  # ma trận
         i=random.randint(1,5) # chọn ngẫu nhiên 1 trong 5 ma trận 
         with open(path.join(maze_forder, 'MAZE{}.txt'.format(i)),'rt') as f:  # đọc ma trận từ file
