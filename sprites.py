@@ -1,5 +1,4 @@
 import math
-from os import path
 import pygame
 from GameStatistics import GameStatistics
 from astar import a_star
@@ -32,22 +31,21 @@ class Player(pygame.sprite.Sprite):
         self.hit_rect.center = self.position  # lấy vị trí chính giữa rect
         self.rect = self.hit_rect.copy()  # copy hit_rect qua rect
 
-        self.is_shoot = False  # biến này cho phép bắn cmn hay ko
+        self.is_shoot = False  # kiểm tra xem có được bắn hay không
         self.rot = 0  # độ xoay của xe
-        # lần cuối cùng bắn sẽ bằng thời gian từ lúc chạy game đến hiện tại (để tránh việc vừa tạo ra thì nó bắn lun)
-        self.last_fire = 0
-        self.target = None  # mục tiêu bắn của xe
+        
+        self.last_fire = 0 # thời gian cuối cùng bắn
         self.rotation_speed = 0  # tốc độ xoay của xe
         PLAYER.append(self)  # thêm chính nó vào list PLAYER
 
-    def keys(self):
+    def keys(self): # hàm kiểm tra xem người chơi ấn nút nào và gán cho vel 1 vector tương ứng với hướng đó
         self.rotation_speed = 0
         self.vel = vector(0, 0)
 
-    def collide_with_bullet(self):
+    def collide_with_bullet(self): # va chạm với đạn
         pass
 
-    def change_rot(self):
+    def change_rot(self): # hàm xoay hình ảnh của xe theo hướng của target
         self.auto_targeting()
         if self.rot == None:
             return
@@ -61,7 +59,7 @@ class Player(pygame.sprite.Sprite):
         if self.is_shoot:
             self.last_fire += self.game.changing_time
             # cách 1 khoảng thời gian (bullet_rate)  mới được bắn
-            if self.last_fire > bullet_rate:
+            if self.last_fire > GameStatistics.bulletRate:
                 self.last_fire = 0
                 # hướng đạn sẽ di chuyển
                 direction = vector(0, 1).rotate(-self.rot).normalize()
@@ -102,12 +100,12 @@ class Player(pygame.sprite.Sprite):
         self.hit_rect.centery += self.vel.y * self.game.changing_time
         self.collide_with_walls('y')
         
-        self.hit_rect.clamp_ip(pygame.Rect(0, 0, WIDTH, HEIGHT))
+        self.hit_rect.clamp_ip(pygame.Rect(0, 0, WIDTH, HEIGHT)) # giới hạn hit_rect trong màn hình để không ra khỏi màn hình
         # sau đó cập nhật rect và position để hình ảnh được cập nhật lại vị trí
         self.rect.center = self.hit_rect.center
         self.position = vector(self.hit_rect.center)
 
-    def update(self):  # hàm này quan trọng phải có vì liên tục được gọi lại
+    def update(self):  # hàm update của sprite
         self.collide_with_bullet()
         self.can_shoot()
         self.keys()
@@ -121,7 +119,7 @@ class Player1(Player):
     def __init__(self, game, x, y):
         super().__init__(game, x, y, getImage(PLAYER_IMAGE1, WHITE))  # gọi class cha
 
-    def keys(self):  # kiểm tra xem người chơi ấn nút nào và gán cho vel 1 vector tương ứng với hướng đó
+    def keys(self): 
         super().keys()
         keys_state = pygame.key.get_pressed()  # lấy giá trị boolean của tất cả các phím
         if keys_state[pygame.K_LEFT]:
@@ -145,7 +143,7 @@ class Player1(Player):
             self.vel = vector(playerSpeed * math.sqrt(0.5),
                               playerSpeed * math.sqrt(0.5))
 
-    def auto_targeting(self):
+    def auto_targeting(self): # hàm tự động nhắm mục tiêu
         if not ENEMY and not PLAYER:
             return
         if ENEMY:
@@ -154,10 +152,10 @@ class Player1(Player):
         self.rot = AutoTargeting.auto_target_player(
             self, self.position, PLAYER)
 
-    def respawn_bullet(self, direction, position):
+    def respawn_bullet(self, direction, position): # hàm khởi tạo đạn
         Bullet('player1', self.game, position, direction)
 
-    def collide_with_player(self):
+    def collide_with_player(self): # va chạm với người chơi
         for player in PLAYER:
             if player != self and player.hit_rect.colliderect(self.hit_rect):
                 Explosion(self.game, player.hit_rect.center)  # Tạo vụ nổ
@@ -169,11 +167,10 @@ class Player1(Player):
                 GameStatistics.death_time_player1 = 0
                 GameStatistics.death_time_player2 = 0
 
-    def collide_with_bullet(self):  # va chạm với đạn sẽ cút
+    def collide_with_bullet(self):  # va chạm với đạn
         for bullet in self.game.bullets:
             if bullet.rect.colliderect(self.hit_rect):
                 if bullet.type != 'player1':
-                    # lấy thời gian lúc cút để tính thời gian hồi sinh
                     GameStatistics.death_time_player1 = 0
                     GameStatistics.number_kill_player2 += 1
                     Explosion(self.game, bullet.rect.center)  # khởi tạo vụ nổ
@@ -181,7 +178,7 @@ class Player1(Player):
                     self.kill()
                     PLAYER.remove(self)  # remove chính nó khỏi list PLAYER
 
-    def update(self):
+    def update(self): # hàm update của sprite
         self.collide_with_player()
         super().update()
 
@@ -244,14 +241,14 @@ class Bullet(pygame.sprite.Sprite):
         self.groups = game.all_sprites, game.bullets
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.type = type  # loại để xác định được đạn của khứa nào bắn ra
+        self.type = type  # loại để xác định được đạn của ai
         self.image = getImage(BULLET_IMAGE, WHITE)
         self.rect = self.image.get_rect()
         self.position = position
         self.rect.center = position
-        self.vel = direction * bulletSpeed  # tính vận tốc của đạn= hướng * tốc độ
+        self.vel = direction * GameStatistics.bulletSpeed  # tính vận tốc của đạn= hướng * tốc độ
 
-    def collide_with_walls(self):  # đạn va chạm với tường sẽ cút và tạo ra vụ nổ
+    def collide_with_walls(self):  # đạn va chạm với tường sẽ tạo ra vụ nổ
         hits = pygame.sprite.spritecollide(self, self.game.walls, False)
         if hits:
             Explosion(self.game, self.position)
@@ -272,13 +269,12 @@ class Bullet(pygame.sprite.Sprite):
 
 
 # -----------------------------------------------------------------------------------
-class Explosion(pygame.sprite.Sprite):
+class Explosion(pygame.sprite.Sprite): # class vụ nổ
     def __init__(self, game, center):
         self.groups = game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        # lấy danh sách ảnh của cảnh động
-        self.list_image = getListImage('regularExplosion0', 50, 50, BLACK, 9)
+        self.list_image = getListImage('regularExplosion0', 50, 50, BLACK, 9)  # lấy danh sách ảnh của cảnh động vụ nổ
         self.image = self.list_image[0]  # lấy ảnh xuất hiện đầu tiên
         self.rect = self.image.get_rect()
         self.rect.center = center
@@ -302,11 +298,10 @@ class Explosion(pygame.sprite.Sprite):
 
 
 # -----------------------------------------------------------------------------------
-class wall(pygame.sprite.Sprite):
+class wall(pygame.sprite.Sprite): # class tường
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.walls
         super().__init__(self.groups)
-        # pygame.sprite.Sprite.__init__(self,self.groups)
         self.image = getImage(WALL_IMAGE, WHITE)
         self.rect = self.image.get_rect()
         self.x = x
@@ -316,7 +311,7 @@ class wall(pygame.sprite.Sprite):
 
 
 # -----------------------------------------------------------------------------------
-class enemy(pygame.sprite.Sprite):
+class enemy(pygame.sprite.Sprite): # class enemy
     def __init__(self, game, x, y, image):
         self.groups = game.all_sprites
         super().__init__(self.groups)
@@ -326,7 +321,7 @@ class enemy(pygame.sprite.Sprite):
         self.velocity = vector(0, 0)  # vận tốc của xe
         self.position = vector(x, y) * (SQSIZE) + vector(16, 16)  # vị trí chính giữa rect
         self.hit_rect = self.image.get_rect()  # lấy rect của image
-        self.hit_rect.center = self.position  # lấy vị trí chính giữa rect
+        self.hit_rect.center = self.position    
         self.rect = self.hit_rect.copy()  # copy hit_rect qua rect
         self.path = []  # list đường đi (enemy AI)
         
@@ -351,16 +346,16 @@ class enemy(pygame.sprite.Sprite):
         self.change_rot()
         self.move()
 
-    def calculate_positions(self):
+    def calculate_positions(self): # tính toán vị trí của enemy và player
         current_position = (int(self.position.y / SQSIZE), int(self.position.x / SQSIZE))
         player_position = (int(self.game.player1.position.y / SQSIZE), int(self.game.player1.position.x / SQSIZE))
         return current_position, player_position
 
-    def update_path(self):
+    def update_path(self): # cập nhật đường đi
             current_position, player_position = self.calculate_positions()
             self.path = a_star(self.game.maze, current_position, player_position)
 
-    def update_position(self,magnitude):
+    def update_position(self,magnitude): # cập nhật vị trí
         speed = 2.5
         self.velocity = vector(self.velocity.x / magnitude * speed,
                                        self.velocity.y / magnitude * speed)
@@ -369,7 +364,7 @@ class enemy(pygame.sprite.Sprite):
         self.rect.center = self.hit_rect.center
         self.position = vector(self.hit_rect.center)
 
-    def move(self):
+    def move(self): # di chuyển của enemy
         self.update_path()
         if self.path and PLAYER:
             p = self.path[0]
@@ -411,24 +406,24 @@ class enemy(pygame.sprite.Sprite):
             self.ability()
 
 
-class TankEnemy(enemy):
+class TankEnemy(enemy): # class TankEnemy
     def __init__(self, game, x, y):
         super().__init__(game, x, y, getImage(PLAYER_IMAGE2, WHITE))
         self.last_fire = 0
 
     def shoot(self):
         self.last_fire += self.game.changing_time
-        if self.last_fire >= bullet_rate:
+        if self.last_fire >= GameStatistics.bulletRate:
             direction = vector(0, 1).rotate(-self.rot).normalize()
             position = self.position + turret.rotate(-self.rot)
             Bullet('enemy', self.game, position, direction)
             self.last_fire = 0
 
-    def ability(self):
+    def ability(self): # khả năng của enemy
         super().ability()
         self.shoot()
 
-class Zombie(enemy):
+class Zombie(enemy): # class Zombie
     def __init__(self, game, x, y):
         super().__init__(game, x, y, getImage(ZOMBIE_IMAGE, WHITE))
 

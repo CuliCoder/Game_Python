@@ -11,14 +11,14 @@ class gameOverGUI:
     def addControls(self):
         k = 160
         self.restart_Button = Button(self.screen, (self.screen.get_width() - 200) // 2, (self.screen.get_height() - 50) // 2 + k, 200, 50, SILVER,
-                     BLACK, 3, "RESTART")
+                     BLACK, 3, "RESTART") #tạo nút restart
         self.exit_Button = Button(self.screen, (self.screen.get_width() - 200) // 2, (self.screen.get_height() - 50) // 2 + k + 70, 200, 50, SILVER,
-                     BLACK, 3, "EXIT")
+                     BLACK, 3, "EXIT") #tạo nút exit
 
         
     def draw(self):
-        self.restart_Button.draw()
-        self.exit_Button.draw()
+        self.restart_Button.draw() #vẽ nút restart
+        self.exit_Button.draw() #vẽ nút exit
 
     def addEvents(self):
         self.action = None

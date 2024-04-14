@@ -5,38 +5,6 @@ from Button import Button
 from game import *
 from setting import *
 
-
-# class Button:
-#     def __init__(self, screen, x, y, width, height, color, border_color, border_width, text):
-#         self.screen = screen
-#         self.x = x
-#         self.y = y
-#         self.width = width
-#         self.height = height
-#         self.color = color
-#         self.border_color = border_color
-#         self.border_width = border_width
-#         self.text = text
-
-#     def draw(self):
-#         # vẽ viền cho nút
-#         pygame.draw.rect(self.screen, self.border_color, (self.x,
-#                          self.y, self.width, self.height), self.border_width)
-#         # vẽ nút
-#         pygame.draw.rect(self.screen, self.color, (self.x + self.border_width, self.y +
-#                          self.border_width, self.width - self.border_width * 2, self.height - self.border_width * 2))
-#         # canh chỉnh chữ trong nút
-#         font = pygame.font.SysFont(None, 30)
-#         text_surface = font.render(self.text, True, (0, 0, 0))
-#         text_rect = text_surface.get_rect(
-#             center=(self.x + self.width // 2, self.y + self.height // 2))
-#         self.screen.blit(text_surface, text_rect)
-
-
-
-
-
-
 class mainGUI:
     def __init__(self):
         pygame.init()
@@ -78,17 +46,14 @@ class mainGUI:
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-            # so sánh tọa độ x y của nút với của con trỏ chuột
-                if check_btn_click(mouse_pos, self.button_quit):
+                if check_btn_click(mouse_pos, self.button_quit): # Kiểm tra xem chuột có click vào nút thoát không
                     self.quit()  # Thoát chương trình
                 if check_btn_click(mouse_pos, self.zombie_Button):
-                    self.current_display = mode_zombie(self.screen)
+                    self.current_display = mode_zombie(self.screen) # Chuyển sang màn hình chơi chế độ zombie
                 if check_btn_click(mouse_pos, self.training_Button):
-                    self.current_display = mode_training(self.screen)
+                    self.current_display = mode_training(self.screen) # Chuyển sang màn hình chơi chế độ huấn luyện
                 if check_btn_click(mouse_pos, self.pvp_Button):
-                    self.current_display = mode_1v1(self.screen)
-                self.screen.blit(self.background, (0, 0))
-                    
+                    self.current_display = mode_1v1(self.screen) # Chuyển sang màn hình chơi chế độ 1v1                    
 
     def run(self):
         self.run = True

@@ -3,7 +3,7 @@ from Button import Button
 from setting import *
 
 
-class pauseGUI:
+class pauseGUI: #màn hình pause
     def __init__(self, screen):
         self.screen = screen
         self.action = None

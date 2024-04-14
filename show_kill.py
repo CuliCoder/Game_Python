@@ -4,7 +4,7 @@ from setting import *
 from GameStatistics import *
 
 
-class show_kill:
+class show_kill: #hiển thị số lần giết
     def __init__(self,screen,direction):
         self.screen = screen
         self.direction = direction
@@ -14,7 +14,7 @@ class show_kill:
         self.text = self.font.render("Kill: " + str(count), True, color)  # Tạo đối tượng văn bản
         self.pos()
         self.screen.blit(self.text, self.text_rect)  # Vẽ văn bản lên màn hình
-    def pos(self):
+    def pos(self): # Đặt vị trí của văn bản
         if self.direction == "left":
             self.text_rect = self.text.get_rect(center=(50, 20))
             return

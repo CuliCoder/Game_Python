@@ -1,14 +1,14 @@
 import math
 
 
-class AutoTargeting:
-    def auto_target_player(obj,position,PLAYER):  # tự động ngắm
+class AutoTargeting: # class ngắm tự động
+    def auto_target_player(obj,position,PLAYER): # tự động ngắm player
         for player in PLAYER:
             if player != obj:
                 target = player
                 return calculate_rotation_angle(target, position)
 
-    def auto_target_enemy(position,ENEMY):
+    def auto_target_enemy(position,ENEMY): # tự động ngắm enemy
         magnitude_min = 10000
         for enemy in ENEMY:
             magnitude = math.sqrt(
@@ -17,11 +17,8 @@ class AutoTargeting:
                 magnitude_min = magnitude
                 target = enemy
         return calculate_rotation_angle(target, position)
-        # self.image = pygame.transform.rotate(self.image_player, self.rot)
-        # self.rect = self.image.get_rect()  # xoay xong thì get_rect lại để hiển thị
 
-
-def calculate_rotation_angle(target, position):
+def calculate_rotation_angle(target, position): #tính góc quay
         dx = target.position.x - position.x
         dy = target.position.y - position.y
         x, y = 0, 1

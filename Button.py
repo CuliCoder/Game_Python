@@ -1,7 +1,7 @@
 import pygame
 
 
-class Button:
+class Button: # class nút
     def __init__(self, screen, x, y, width, height, color, border_color, border_width, text):
         self.screen = screen
         self.x = x
@@ -9,7 +9,7 @@ class Button:
         self.width = width
         self.height = height
         self.color = color
-        self.border_color = border_color
+        self.border_color = border_color 
         self.border_width = border_width
         self.text = text
 
@@ -26,7 +26,7 @@ class Button:
         text_rect = text_surface.get_rect(
             center=(self.x + self.width // 2, self.y + self.height // 2))
         self.screen.blit(text_surface, text_rect)
-class button_setting:
+class button_setting: # class nút setting
     def __init__(self, screen,  x, y, width, height):
         self.screen = screen
         self.width = width
