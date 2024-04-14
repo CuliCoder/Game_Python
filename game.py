@@ -170,7 +170,7 @@ class mode_zombie(game): #chế độ zombie
 
     def data(self):
         super().data()
-        self.auto_respawn_zombie = auto_respawn_zombie(self, 1)
+        self.auto_respawn_zombie = auto_respawn_zombie(self, 0.7)
 
     def AddedItems(self):
         super().AddedItems()
