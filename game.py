@@ -65,9 +65,16 @@ class game:
         self.all_sprites = pygame.sprite.Group() #tạo nhóm tất cả các sprites
         self.bullets = pygame.sprite.Group() #tạo nhóm đạn
         self.walls = pygame.sprite.Group()  # tạo nhóm tường
-   
+    
+    def grid(self):
+        for x in range(0, WIDTH, SQSIZE):
+            pygame.draw.line(self.screen, BLACK, (x, 0), (x, HEIGHT))
+        for y in range(0, HEIGHT, SQSIZE):
+            pygame.draw.line(self.screen, BLACK, (0, y), (WIDTH, y))
+
     def draw(self): #vẽ các đối tượng lên màn hình
         self.screen.fill(DARK_SEA_GREEN) #tô màu màn hình
+        # self.grid() #vẽ lưới
         self.all_sprites.draw(self.screen) #vẽ tất cả các sprites
         self.btn_setting.draw() #vẽ nút setting
         self.show_kill_player1.draw(GameStatistics.number_kill_player1,BLUE) #vẽ số lần giết của player1

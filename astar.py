@@ -31,7 +31,7 @@ def pop_node(open_list): #lấy node có f nhỏ nhất trong open_list
 
 
 def heuristics(a, b): #tính khoảng cách giữa 2 node
-    return math.sqrt((a.position[0] - b.position[0]) ** 2 + abs(a.position[1] - b.position[1]) ** 2)
+    return math.sqrt((a.position[0] - b.position[0]) ** 2 + (a.position[1] - b.position[1]) ** 2)
 
 
 def a_star(maze, start, end): #tìm đường đi ngắn nhất từ start đến end
